@@ -10,19 +10,23 @@
  * };
  */
 class Solution {
-    void preorder(TreeNode* root, map <int, int> &ksmallest){
+    void traverse(TreeNode* root, int &ans, int &k){
         if(root == NULL) return;
+        traverse(root -> left, ans, k);
 
-        ksmallest[root -> val] += 1;
-        preorder(root -> left, ksmallest);
-        preorder(root -> right, ksmallest);
+        k--;
+        if(k == 0){
+            ans = root -> val;
+            return;
+        }
+
+        traverse(root -> right, ans, k);
     }
 
 public:
     int kthSmallest(TreeNode* root, int k) {
-        map <int, int> ksmallest;
-        preorder(root, ksmallest);
-        auto it = next(ksmallest.begin(), k-1);
-        return it->first;
+        int ans;
+        traverse(root, ans, k);
+        return ans;
     }
 };
