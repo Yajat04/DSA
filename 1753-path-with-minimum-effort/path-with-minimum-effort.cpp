@@ -4,62 +4,48 @@ public:
         int m = heights.size();
         int n = heights[0].size();
 
-        // dist[i][j] = minimum effort required to reach cell (i,j)
         vector<vector<int>> dist(m, vector<int>(n, INT_MAX));
         dist[0][0] = 0;
 
-        // {effort, {row, col}}
         priority_queue<
-            pair<int, pair<int, int>>,
-            vector<pair<int, pair<int, int>>>,
-            greater<pair<int, pair<int, int>>>
-        > pq;
+            pair<pair<int, int>, int>,
+            vector<pair<pair<int, int>, int>>,
+            greater<pair<pair<int, int>, int>>
+            > pq;
 
-        pq.push({0, {0, 0}});
+        pq.push({{0, 0}, 0});
 
-        int dr[] = {-1, 1, 0, 0};
-        int dc[] = {0, 0, -1, 1};
+        int dx[] = {-1, 1, 0, 0};
+        int dy[] = {0, 0, -1, 1};
 
-        while (!pq.empty()) {
-
-            auto curr = pq.top();
+        while(!pq.empty()) {
+            auto top = pq.top();
             pq.pop();
 
-            int currEffort = curr.first;
-            int row = curr.second.first;
-            int col = curr.second.second;
+            int r = top.first.first;
+            int c = top.first.second;
+            int e = top.second;
 
-            // Ignore outdated entries
-            if (currEffort > dist[row][col])
-                continue;
+            if(r == m-1 && c == n-1) return dist[m-1][n-1];
 
-            // Destination reached
-            if (row == m - 1 && col == n - 1)
-                return currEffort;
+            if(e > dist[r][c]) continue; //Dont explore neighbours with old values [Non min val]
 
-            for (int k = 0; k < 4; k++) {
+            for(int i = 0; i < 4; i++){
+                int nrow = r + dx[i];
+                int ncol = c + dy[i];
 
-                int nr = row + dr[k];
-                int nc = col + dc[k];
+                if(nrow >= 0 && nrow < m && ncol >= 0 && ncol < n){ //valid cell
+//No need of visited array as there may be node used multiple times to find out the best path
+                    int diff = abs(heights[r][c] - heights[nrow][ncol]);
+                    int effort = max(e, diff);
 
-                if (nr >= 0 && nr < m && nc >= 0 && nc < n) {
-
-                    // Difference of the current edge
-                    int edgeDiff = abs(heights[row][col] - heights[nr][nc]);
-
-                    // Effort of the complete path till neighbour
-                    int newEffort = max(currEffort, edgeDiff);
-
-                    // Found a better path
-                    if (newEffort < dist[nr][nc]) {
-                        dist[nr][nc] = newEffort;
-                        pq.push({newEffort, {nr, nc}});
+                    if(dist[nrow][ncol] > effort){
+                        dist[nrow][ncol] = effort;
+                        pq.push({{nrow, ncol}, effort});
                     }
                 }
             }
         }
-
         return 0;
-
     }
 };
