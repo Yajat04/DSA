@@ -2,9 +2,6 @@ class Solution {
 public:
     int numberOfSubstrings(string s) {
         int n = s.size();
-
-        int right = 0;
-        int left = 0;
         int cnt = 0;
 
         vector <int> hash(3, -1);
