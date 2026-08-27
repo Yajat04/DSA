@@ -7,10 +7,9 @@ class Solution {
             if(arrive[nbr] == -1){
                 dfs(nbr, u, timer, arrive, last, adj, ans);
                 if(last[nbr] > arrive[u]) ans.push_back({u, nbr});
-                last[u] = min(last[u], last[nbr]);
             }
-            
-            else last[u] = min(last[u], last[nbr]);
+
+            last[u] = min(last[u], last[nbr]);
         }
     }
 public:
