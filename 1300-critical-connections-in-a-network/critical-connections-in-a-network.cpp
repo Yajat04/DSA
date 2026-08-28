@@ -3,13 +3,14 @@ class Solution {
             unordered_map <int, list<int>> &adj, vector<vector<int>> &ans){
         arrive[u] = last[u] = timer++;
         for(int nbr : adj[u]){
-            if(nbr == parent) continue;
+            if(nbr == parent) continue; //Dont traaverse that edge which it came from parent
             if(arrive[nbr] == -1){
                 dfs(nbr, u, timer, arrive, last, adj, ans);
                 if(last[nbr] > arrive[u]) ans.push_back({u, nbr});
+                last[u] = min(last[u], last[nbr]);
             }
 
-            last[u] = min(last[u], last[nbr]);
+            else last[u] = min(last[u], arrive[nbr]);
         }
     }
 public:
@@ -27,7 +28,8 @@ public:
         }
 
         vector<vector<int>> ans;
-        int timer = -1;
+        int timer = -1; // Causes error i we directly put -1 as timer is used as reference
+        //Hence variable is to be passed
         dfs(0, -1, timer, arrive, last, adj, ans);
         return ans;
 
