@@ -25,7 +25,7 @@ public:
 };
 
 class Solution {
-    int ans;
+    int ans = 0;
     NodeValue validBST(TreeNode* root) {
         if (!root)
             return NodeValue(INT_MAX, INT_MIN, 0); // returned an object
