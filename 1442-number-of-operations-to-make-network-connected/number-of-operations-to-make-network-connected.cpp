@@ -7,9 +7,10 @@ class Solution {
     }
 public:
     int makeConnected(int n, vector<vector<int>>& connections) {
+        if (connections.size() < n - 1) return -1;
         vector <int> parent(n, -1);
         vector <int> rank(n, -1);
-        int count = 0;
+        int components = n;
 
         for(int i = 0; i < n; i++) parent[i] = i;
         for(int i = 0; i < connections.size(); i++){
@@ -17,28 +18,22 @@ public:
             int v = connections[i][1];
 
             int pu = findParent(u, parent);
+            parent[u] = pu;
             int pv = findParent(v, parent);
+            parent[v] = pv;
 
-            if(pv == pu) count++;
-            else{
+            if(pv != pu){
                 if(rank[pu] == rank[pv]){
                 rank[pu]++;
                 parent[pv] = pu;
                 }
                 else if(rank[pu] > rank[pv]) parent[pv] = pu;
                 else parent[pu] = pv;
+                components--;
             }
         }
 
-        set <int> st;
-        for(int i = 0; i < n; i++){
-            int pi = findParent(i, parent);
-            if(st.count(pi) > 0) continue;
-            st.insert(pi);
-        }
-
-        if(count < st.size()-1) return -1;
-        return st.size()-1;
+        return components-1;
 
     }
 };
