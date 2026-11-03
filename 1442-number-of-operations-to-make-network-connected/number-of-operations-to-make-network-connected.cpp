@@ -1,15 +1,14 @@
 class Solution {
-    int findParent(int u, vector <int> &parent){
-        while(parent[u] != u){
-            u = parent[u];
-        }
-        return u;
+    int findParent(int u, vector<int>& parent) {
+        if (parent[u] == u) return u;
+        // Path compression: flatten the structure on traversal
+        return parent[u] = findParent(parent[u], parent);
     }
 public:
     int makeConnected(int n, vector<vector<int>>& connections) {
         if (connections.size() < n - 1) return -1;
         vector <int> parent(n, -1);
-        vector <int> rank(n, -1);
+        vector <int> rank(n, 0);
         int components = n;
 
         for(int i = 0; i < n; i++) parent[i] = i;
@@ -18,9 +17,7 @@ public:
             int v = connections[i][1];
 
             int pu = findParent(u, parent);
-            parent[u] = pu;
             int pv = findParent(v, parent);
-            parent[v] = pv;
 
             if(pv != pu){
                 if(rank[pu] == rank[pv]){
